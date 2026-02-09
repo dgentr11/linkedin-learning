@@ -20,7 +20,7 @@ export const POSTS_QUERY =
     name,
     image
   }
-}`)
+}`);
 
 export const POSTS_SLUGS_QUERY =
   defineQuery(`*[_type == "post" && defined(slug.current)]{ 
@@ -45,5 +45,38 @@ export const POST_QUERY =
   author->{
     name,
     image
+  },
+  relatedPosts[]{
+    _key, 
+    ...@->{_id, title, slug}
   }
-}`)
+}`);
+
+
+// ...all other queries
+
+export const PAGE_QUERY =
+  defineQuery(`*[_type == "page" && slug.current == $slug][0]{
+  ...,
+  content[]{
+    ...,
+    _type == "faqs" => {
+      ...,
+      faqs[]->
+    }
+  }
+}`);
+
+
+export const HOME_PAGE_QUERY = defineQuery(`*[_id == "siteSettings"][0]{
+  homePage->{
+    ...,
+    content[]{
+      ...,
+      _type == "faqs" => {
+        ...,
+        faqs[]->
+      }
+    }      
+  }
+}`);
