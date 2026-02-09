@@ -12,6 +12,8 @@ import {featuresType} from './blocks/featuresType'
 import {faqsType} from './blocks/faqsType'
 import {faqType} from './blocks/faqType'
 import {siteSettingsType} from './siteSettingsType'
+import {seoType} from './seoType'
+import {redirectType} from './redirectType'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -26,6 +28,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     featuresType,
     faqsType,
     faqType,
-    siteSettingsType
+    siteSettingsType,
+    seoType,
+    redirectType
   ],
 }

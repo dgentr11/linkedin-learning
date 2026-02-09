@@ -34,6 +34,12 @@ export const POST_QUERY =
   body,
   mainImage,
   publishedAt,
+  "seo": {
+    "title": coalesce(seo.title, title, ""),
+    "description": coalesce(seo.description, ""),
+    "image": seo.image,
+    "noIndex": seo.noIndex == true,
+  },
   "categories": coalesce(
     categories[]->{
       _id,
@@ -58,11 +64,22 @@ export const POST_QUERY =
 export const PAGE_QUERY =
   defineQuery(`*[_type == "page" && slug.current == $slug][0]{
   ...,
+  "seo": {
+    "title": coalesce(seo.title, title, ""),
+    "description": coalesce(seo.description, ""),
+    "image": seo.image,
+    "noIndex": seo.noIndex == true,
+  },
   content[]{
     ...,
     _type == "faqs" => {
       ...,
-      faqs[]->
+      faqs[]->{
+        _id,
+        title,
+        body,
+        "text": pt::text(body)
+      }
     }
   }
 }`);
@@ -71,12 +88,55 @@ export const PAGE_QUERY =
 export const HOME_PAGE_QUERY = defineQuery(`*[_id == "siteSettings"][0]{
   homePage->{
     ...,
+    "seo": {
+      "title": coalesce(seo.title, title, ""),
+      "description": coalesce(seo.description, ""),
+      "image": seo.image,
+      "noIndex": seo.noIndex == true,
+    },
     content[]{
       ...,
       _type == "faqs" => {
         ...,
-        faqs[]->
+        faqs[]->{
+          _id,
+          title,
+          body,
+          "text": pt::text(body)
+        }
       }
     }      
   }
 }`);
+
+export const REDIRECTS_QUERY = defineQuery(`
+  *[_type == "redirect" && isEnabled == true] {
+      source,
+      destination,
+      permanent
+  }
+`);
+
+export const OG_IMAGE_QUERY = defineQuery(`
+  *[_id == $id][0]{
+    title,
+    "image": mainImage.asset->{
+      url,
+      metadata {
+        palette
+      }
+    }
+  }    
+`);
+
+
+export const SITEMAP_QUERY = defineQuery(`
+  *[_type in ["page", "post"] && defined(slug.current)] {
+      "href": select(
+        _type == "page" => "/" + slug.current,
+        _type == "post" => "/posts/" + slug.current,
+        slug.current
+      ),
+      _updatedAt
+  }
+`)

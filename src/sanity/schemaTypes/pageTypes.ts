@@ -28,6 +28,10 @@ export const pageType = defineType({
       options: {
         hotspot: true,
       },
+    }),
+    defineField({
+      name: "seo",
+      type: "seo",
     }),    
   ],
   preview: {

@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineField, defineType, defineArrayMember } from "sanity";
 import { StarIcon } from '@sanity/icons';
 
 export const featuresType = defineType({
@@ -13,7 +13,7 @@ export const featuresType = defineType({
       name: "features",
       type: "array",
       of: [
-        defineField({
+        defineArrayMember({
           name: "feature",
           type: "object",
           fields: [
